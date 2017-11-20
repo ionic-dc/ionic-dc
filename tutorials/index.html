@@ -1,0 +1,1009 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>Ionic Codelab</title>
+    <script>
+        window.Polymer = {
+            dom: 'shadow',
+            lazyRegister: 'max',
+            useNativeCSSProperties: true
+        };
+    </script>
+    <link rel="stylesheet"
+          href="//fonts.googleapis.com/css?family=Roboto:300,400,400italic,500,500italic,700,700italic|Roboto+Mono:400,700">
+    <link rel="import" href="../google-codelab-elements.html">
+    <style is="custom-style">
+        body {
+            font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial;
+            background: var(--google-codelab-background, --paper-grey-300);
+        }
+    </style>
+</head>
+<body>
+
+<google-codelab title="Getting Started With Ionic"
+                feedback-link="https://ionicframework.com/docs/"
+                environment="web"
+                last-updated="2017-11-18">
+
+    <google-codelab-step label="Overview & Setup" duration="5">
+        <h2 class="checklist">We will be building a <em>Todo App</em> that will allow a user to:</h2>
+        <ul class="checklist">
+            <li>View a list of todo items</li>
+            <li>Add new todo items</li>
+            <li>View details of a specific todo</li>
+            <li>Save the items to local storage</li>
+        </ul>
+
+        <aside class="warning">
+            <p>
+                <b>Before You Get Started!</b>
+            </p>
+            <p>
+                If you haven't already you will want to install the <em>Ionic CLI</em> and <em>Cordova</em> by running the following command.
+                You may need to add <code>sudo</code> in front of this command to install globally:
+            </p>
+            <code>npm install -g ionic cordova</code>
+        </aside>
+
+        <h2>Generate a new Ionic Project</h2>
+        <p>
+            Now that you have installed the Ionic CLI you can generate your project using the blank template:
+        </p>
+
+        <code>ionic start ionic-todo blank</code>
+
+        <p>
+            Then open the <b>/ionic-todo</b> folder in your preferred code editor (VSCode & WebStorm works great for Ionic projects).
+        </p>
+
+        <h2>Anatomy of an Ionic Project</h2>
+        <p>
+            Ionic is built on the <em>Angular</em> framework for developing web applications so developing an Ionic 2+ application
+            will be very similar to developing a standard Angular 2+ app.
+        </p>
+        <p>
+            All of the <em>components</em> for our application will be in the <b>/src</b> folder
+            (including the root component in the <b>/app</b> folder, and all of our page components in the <b>/pages</b> folder).
+            A component will consist of a template (<b>.html</b> file defining structure and elements), class definition (<b>.ts</b> file defining actions and logic)
+            and styles (<b>.scss</b> file defining layout and appearance).
+        </p>
+        <p>
+            Along with components, you have <em>providers</em> (like the data service we will create later)
+            which don’t have a html template or scss styling, but are similar in structure component's typescript class.
+            These providers and will be placed in a providers folder.
+        </p>
+        <p>
+            Open the <b>src/app/app.component.ts</b> file that is auto generated:
+        </p>
+
+<pre><code>
+import { Component } from '@angular/core';
+import { Platform } from 'ionic-angular';
+
+import { HomePage } from '../pages/home/home';
+
+@Component({
+  templateUrl: 'app.html'
+})
+export class MyApp {
+
+  rootPage:any = HomePage;
+
+  constructor(platform: Platform) {
+    platform.ready().then(() => {
+
+    });
+  }
+}
+</code></pre>
+
+        <p>
+            The <b>app.component.ts</b> file defines our <b>root component</b>. This component is special when compared to the rest of
+            the components because it is the first component that will be added to the application, and from there we can
+            display more components, which can then add even more components and so on. Basically, our application structure
+            is like a tree with the root component at the root of that tree. So, it’s important that our root component
+            knows where to find our <b>HomePage</b> as it will need to set it as the root page. Notice that we are importing the
+            <b>HomePage</b> at the top of this file, and then setting it as the root page with the following code:
+        </p>
+
+<pre><code>
+rootPage: any = HomePage;
+</code></pre>
+
+        <p>
+
+            We are able to declare variables above the constructor to make them <b>member variables</b> or class members,
+            meaning they will be accessible throughout the entire class by referencing <code>this.myVar</code> and it will also
+            be available to your templates. In this case, we are creating a class member called <code>rootPage</code> that we will
+            be able to access throughout this class, and in the template. If we take a look at the associated template
+            that is in <b>src/app/app.html</b> we would see:
+        </p>
+
+<pre><code>
+&lt;ion-nav [root]="rootPage"&gt;&lt;/ion-nav&gt;
+</code></pre>
+
+        <p>
+            The template is accessing that class member that is stored in the <em>TypeScript</em> class file to configure the
+            <code>&lt;ion-nav&gt;</code> component. Remember every component you create will consist of a <b>.html</b>
+            template file and a <b>.ts</b> typescript class file.
+        </p>
+        <p>
+            The <b>root page</b> is the first page that will be displayed in your application, and then you can navigate to other pages from there.
+            To change views in an Ionic application you can either change this root page, or <b>push</b> and <b>pop</b> views on top of that page.
+            Pushing a view will change to that view, and popping it will remove it and go back to the previous view.
+        </p>
+
+        <aside class="special">
+            <p>
+                This <em>Codelab</em> has been adapted with permission from a
+                <a href="https://www.joshmorony.com/build-a-todo-app-from-scratch-with-ionic-2-video-tutorial/" target="_blank">tutorial</a>
+                posted on Josh Morony's blog. You can find many more excellent
+                <a href="https://www.joshmorony.com/category/ionic-tutorials/" target="_blank">Ionic tutorials</a> and
+                <a href="https://www.youtube.com/playlist?list=PLvLBrJpVwC7piPgR6u165HAnr-2Z80etB" target="_blank">videos</a> on his site.
+            </p>
+        </aside>
+
+        <google-codelab-survey survey-id="ionic-dc-todo-app-proficiency"><h4>How would describe your proficiency with Ionic?</h4>
+            <paper-radio-group>
+                <paper-radio-button>Never Used It</paper-radio-button>
+                <paper-radio-button>Some Experience with Ionic or Angular2+</paper-radio-button>
+                <paper-radio-button>Advanced User</paper-radio-button>
+            </paper-radio-group>
+        </google-codelab-survey>
+    </google-codelab-step>
+
+
+    <google-codelab-step label="Building the Home Page" duration="5">
+        <p>
+            Now that we’ve got our basic application set up, we will set up our todo list template in our home page.
+        </p>
+
+        <h2>Creating the Home Page Template</h2>
+
+        <aside class="special">
+            Modify <b>src/pages/home/home.html</b> to reflect the following:
+        </aside>
+
+<pre><code>
+&lt;ion-header&gt;
+  &lt;ion-navbar color="secondary"&gt;
+    &lt;ion-title&gt;
+      Todos!
+    &lt;/ion-title&gt;
+    &lt;ion-buttons end&gt;
+      &lt;button ion-button icon-only (click)="addItem()"&gt;&lt;ion-icon name="add-circle"&gt;&lt;/ion-icon&gt;&lt;/button&gt;
+    &lt;/ion-buttons&gt;
+  &lt;/ion-navbar&gt;
+&lt;/ion-header&gt;
+
+&lt;ion-content&gt;
+  &lt;ion-list&gt;
+    &lt;ion-item *ngFor="let item of items" (click)="viewItem(item)"&gt;{{item.title}}&lt;/ion-item&gt;
+  &lt;/ion-list&gt;
+&lt;/ion-content&gt;
+</code></pre>
+
+        <p>
+            Take notice of the <code>*</code> syntax used here for the <code>*ngFor</code> in the list,
+            this is shorthand for creating an embedded template. So rather than literally rendering out:
+        </p>
+
+<pre><code>
+&lt;ion-item *ngFor="let item of items" (click)="viewItem(item)"&gt;{{item.title}}&lt;/ion-item&gt;
+</code></pre>
+
+        <p>
+            to the DOM (<em>Document Object Model</em>), an embedded template will be created for each <b>items</b> specific data.
+            So, if our items array (which will be defined later in the class definition) had 4 items in it, then
+            the <code>&lt;ion-item&gt;</code> would be rendered out 4 times.</p>
+        <p>
+            Also notice that we are using <code>let item</code>, which assigns a
+            single element from the <code>items</code> array to <code>item</code> as we loop through the array.
+            This allows us to reference its properties, and also pass it into the <code>viewItem</code> function.
+        </p>
+        <p>
+            We are also setting the title to <b>Todos!</b> and we are supplying a button using <code>&lt;ion-buttons&gt;</code>.
+            Since we have supplied the end attribute, the button will be placed in the “end” position.
+            Different attributes may behave differently depending on what platform they are running on,
+            but on iOS for example, “end” will place the button to the right of the nav bar. Also note
+            that on the button itself we give it an attribute of <code>ion-button</code> which will give the button the Ionic styling,
+            as well as <code>icon-only</code> which styles buttons that only contain an icon and no text.
+        </p>
+        <p>
+            We are using <code>(click)</code> to attach a click listener to this element, which will call the <code>addItem()</code>
+            function in <b>home.ts</b> (which doesn’t exist yet).
+        </p>
+
+        <h2>Creating the Home Page Class</h2>
+
+        <p>
+            Now that we have our template sorted, we need to create the functions we are referencing in our <b>HomePage</b> class,
+            and we also need to supply the <b>items</b> data (we will just set up some dummy data initially).
+        </p>
+
+        <aside class="special">
+            Modify <b>src/pages/home/home.ts</b> to reflect the following:
+        </aside>
+
+<pre><code>
+import { Component } from '@angular/core';
+import { NavController } from 'ionic-angular';
+
+@Component({
+  selector: 'page-home',
+  templateUrl: 'home.html'
+})
+export class HomePage {
+
+  public items;
+
+  constructor(public navCtrl: NavController) {
+  }
+
+  ionViewDidLoad(){
+    this.items = [
+      {title: 'hi1', description: 'test1'},
+      {title: 'hi2', description: 'test2'},
+      {title: 'hi3', description: 'test3'}
+    ];
+  }
+
+  addItem(){
+  }
+
+  viewItem(){
+  }
+}
+</code></pre>
+
+        <p>
+            We are assigning a type of <code>NavController</code> to the <code>navCtrl</code> parameter in the constructor.
+            This is how dependency injection works in Ionic (or any <em>Angular</em> app), and is basically a way of telling the application
+            “we want <code>navCtrl</code> to be a reference to <code>NavController</code>“. By adding the <code>public</code> keyword in front of it,
+            it automatically creates a member variable for us.
+            This means that we can now reference the <code>NavController</code> anywhere in this class by using <code>this.navCtrl</code>.
+        </p>
+        <p>
+            Now that we’ve set up some dummy data (we use the <code>ionViewDidLoad</code> lifecycle hook to do this, which is
+            triggered as soon as the page is loaded), you should be able to see items rendered in your list when you run
+            <code>ionic serve</code> in your console:
+        </p>
+
+        <img src="../img/todo-list.png" alt="ToDo List Screen" style="max-width: 300px;">
+
+        <p>
+            Since we have imported the <code>NavController</code> service, we will
+            be able to <b>push</b> and <b>pop</b> views from this component by using:
+        </p>
+
+<pre><code>
+this.navCtrl.push(SOME_PAGE); // To navigate to a new page in the stack
+this.navCtrl.pop(); // To navigate backwards in the stack
+</code></pre>
+
+        <p>
+            We’ve also created function placeholders for adding items and viewing items, but before we can take this any further we are
+            going to have to create a <b>AddItemPage</b> and <b>ItemDetailPage</b> component.
+        </p>
+    </google-codelab-step>
+
+
+    <google-codelab-step label="Building the Add Item Page" duration="10">
+        <p>
+            We’re going to create a new component that will allow us to add new todo’s.
+            This will be a simple form where we supply a <b>title</b> and <b>description</b>.
+        </p>
+
+        <h2>Generate the Add Item Page</h2>
+
+        <aside class="special">
+            Run the following command to generate a new <b>add-item</b> page:
+        </aside>
+
+       <code>
+ionic g page AddItem
+        </code>
+
+        <aside class="warning">
+            <p>
+                <b>IMPORTANT:</b> When pages are generated in Ionic, something called “lazy loading” is set up by default.
+                To keep things simple, we will not be covering that in this tutorial.
+                To make sure you do not run into any issues, you should delete the <b>add-item.module.ts</b> file that is generated.
+                The <code>@IonicPage()</code> decorator should also be removed from the <b>add-item.ts</b> file.
+            </p>
+        </aside>
+
+        <p>
+            Whenever we create a new page, we need to ensure that it is imported into our <b>app.module.ts</b>, 
+            and declared in the <code>declarations</code> and <code>entryComponents</code> arrays.
+        </p>
+
+        <aside class="special">
+            Modify <b>src/app/app.module.ts</b> to reflect the following:
+        </aside>
+
+<pre><code>
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule, ErrorHandler } from '@angular/core';
+import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
+import { MyApp } from './app.component';
+import { HomePage } from '../pages/home/home';
+import { AddItemPage } from '../pages/add-item/add-item';
+
+@NgModule({
+  declarations: [
+    MyApp,
+    HomePage,
+    AddItemPage
+  ],
+  imports: [
+    BrowserModule,
+    IonicModule.forRoot(MyApp)
+  ],
+  bootstrap: [IonicApp],
+  entryComponents: [
+    MyApp,
+    HomePage,
+    AddItemPage
+  ],
+  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}]
+})
+export class AppModule {}
+</code></pre>
+
+        <h2>Setting up the Add Item Template</h2>
+
+        <aside class="special">
+            Modify <b>src/pages/add-item/add-item.html</b> to reflect the following:
+        </aside>
+
+<pre><code>
+&lt;ion-header&gt;
+  &lt;ion-toolbar color="secondary"&gt;
+    &lt;ion-title&gt;
+      Add Item
+    &lt;/ion-title&gt;
+      &lt;ion-buttons end&gt;
+        &lt;button ion-button icon-only (click)="close()"&gt;&lt;ion-icon name="close"&gt;&lt;/ion-icon&gt;&lt;/button&gt;
+      &lt;/ion-buttons&gt;
+    &lt;/ion-toolbar&gt;
+&lt;/ion-header&gt;
+
+&lt;ion-content&gt;
+  &lt;ion-list&gt;
+    &lt;ion-item&gt;
+      &lt;ion-label floating&gt;Title&lt;/ion-label&gt;
+      &lt;ion-input type="text" [(ngModel)]="title"&gt;&lt;/ion-input&gt;
+    &lt;/ion-item&gt;
+
+    &lt;ion-item&gt;
+      &lt;ion-label floating&gt;Description&lt;/ion-label&gt;
+      &lt;ion-input type="text" [(ngModel)]="description"&gt;&lt;/ion-input&gt;
+    &lt;/ion-item&gt;
+  &lt;/ion-list&gt;
+
+  &lt;button full ion-button color="secondary" (click)="saveItem()"&gt;Save&lt;/button&gt;
+&lt;/ion-content&gt;
+</code></pre>
+
+        <p>
+            We a button calling a <code>saveItem()</code> function that we will define in <b>add-item.ts</b> shortly.
+            We also have a button that references a <code>close()</code> function –
+            since we will eventually launch this page as a <code>Modal</code> we want the ability to dismiss the page, 
+            so we will also be defining this function in <b>add-item.ts</b>.
+        </p>
+        <p>
+            Then we have some inputs, and on them, we have <code>[(ngModel)]</code>, which sets up two-way data binding for us.
+            Any change we make to the <code>title</code> field will be immediately reflected on the <code>this.title</code>
+            member variable in <b>add-item.ts</b> (which we will also add shortly). The same goes in reverse, any change 
+            we make to <code>this.title</code> in <b>add-item.ts</b> will also be immediately reflected in the template.
+        </p>
+        <p>
+            Also notice that on our save button we use the <code>full</code> attribute, this is a handy little attribute that will
+            make the button full width for us.
+        </p>
+
+        <h2>Setting up the Add Item Class</h2>
+
+        <aside class="special">
+            Modify <b>src/pages/add-item/add-item.ts</b> to reflect the following:
+        </aside>
+
+<pre><code>
+import { Component } from '@angular/core';
+import { NavController, ViewController } from 'ionic-angular';
+
+@Component({
+  selector: 'page-add-item',
+  templateUrl: 'add-item.html'
+})
+export class AddItemPage {
+
+  title: string;
+  description: string;
+
+  constructor(public navCtrl: NavController, public view: ViewController) {
+  }
+
+  saveItem(){
+    let newItem = {
+      title: this.title,
+      description: this.description
+    };
+
+    this.view.dismiss(newItem);
+  }
+
+  close(){
+    this.view.dismiss();
+  }
+}
+</code></pre>
+
+        <p>
+            We’re importing a new service <code>ViewController</code> as <code>view</code> which can be used with Modals to <b>dismiss</b> (close) them.
+        </p>
+        <p>
+            Apart from that, we are just creating the <code>saveItem()</code> function which sets up a newItem object, 
+            which will use the current values of <code>title</code> and <code>description</code> 
+            (i.e. whatever the user puts in the input fields we set up two-way data binding on). We then <code>dismiss</code> the view,
+            but we also pass in that new item to the dismiss function. 
+            This will allow us to set up a listener back on our home page to grab that item.
+            In this way, we can pass data from one page to another.
+        </p>
+
+        <h2>Saving Items in the Home Page</h2>
+        
+        <p>
+            We are sending some data back to the <b>HomePage</b> component to be saved, so we are going to have to set that up. 
+            We are also going to <b>import</b> our new <b>AddItemPage</b> component into the <b>HomePage</b> 
+            so that we can create that view when the user clicks <b>Add Item</b>.
+        </p>
+        <aside class="special">
+            Modify <b>src/pages/home/home.ts</b> to reflect the following:
+        </aside>
+
+<pre><code>
+import { Component } from '@angular/core';
+import { ModalController, NavController } from 'ionic-angular';
+import { AddItemPage } from '../add-item/add-item'
+
+@Component({
+  selector: 'page-home',
+  templateUrl: 'home.html'
+})
+export class HomePage {
+
+  public items = [];
+
+  constructor(public navCtrl: NavController, public modalCtrl: ModalController) {
+  }
+
+  addItem(){
+    let addModal = this.modalCtrl.create(AddItemPage);
+
+    addModal.onDidDismiss((item) => {
+      if(item){
+        this.saveItem(item);
+      }
+    });
+
+    addModal.present();
+  }
+
+  saveItem(item){
+    this.items.push(item);
+  }
+
+  viewItem(item){
+  }
+}
+</code></pre>
+
+        <p>
+            If you look at the top of this file, you can see that we are now <b>importing</b> the <b>AddItemPage</b> component.
+            This will allow us to create a Modal using that page, as we are doing in the <code>addItem()</code> function.
+            Notice that we also set up the <code>onDidDismiss()</code> listener here, which will grab that item that is being passed back
+            and then save it using the <code>saveItem()</code> function.
+            For now we just save an item by pushing it into the <code>items</code> array, but eventually we will save it into storage.
+        </p>
+        <p>
+            We’ve also removed the dummy data, because now when a user enters in a new item it will be added to <code>this.items</code>
+            through the <code>saveItem()</code> function. We also set <code>items</code> to be an empty array initially.
+        </p>
+
+        <p>
+            Save all your files and if <code>ionic serve</code> is running you should see your home page now allows you to add new
+            items via a modal and when you return to the home page the items should display in a list.
+        </p>
+    </google-codelab-step>
+
+
+    <google-codelab-step label="Building the Item Detail Page" duration="10">
+        <p>
+            Now we want to add the ability to click on a specific todo list item, and then view the details of that item
+            (i.e. the description). To do this, we are going to create a new page component.
+        </p>
+
+        <h2>Generate the Item Detail Page</h2>
+
+        <aside class="special">
+            Run the following command to create an item-detail page:
+        </aside>
+
+        <code>
+            ionic g page ItemDetail
+        </code>
+
+        <p>
+            and once again, we will need to set it up in our <b>app.module.ts</b> file:
+        </p>
+        
+        <aside class="special">
+            Modify <b>src/app/app.module.ts</b> to reflect the following:
+        </aside>
+
+<pre><code>
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule, ErrorHandler } from '@angular/core';
+import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
+import { MyApp } from './app.component';
+import { HomePage } from '../pages/home/home';
+import { AddItemPage } from '../pages/add-item/add-item';
+import { ItemDetailPage } from '../pages/item-detail/item-detail';
+
+@NgModule({
+  declarations: [
+    MyApp,
+    HomePage,
+    AddItemPage,
+    ItemDetailPage
+  ],
+  imports: [
+    BrowserModule,
+    IonicModule.forRoot(MyApp)
+  ],
+  bootstrap: [IonicApp],
+  entryComponents: [
+    MyApp,
+    HomePage,
+    AddItemPage,
+    ItemDetailPage
+  ],
+  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}]
+})
+export class AppModule {}
+</code></pre>
+
+        <h2>Modify Item Detail Page's Template and Class</h2>
+
+        <p>
+            Now let’s set up our new page component.
+        </p>
+
+        <aside class="special">
+            Modify <b>src/pages/item-detail/item-detail.html</b> to reflect the following:
+        </aside>
+
+<pre><code>
+&lt;ion-header&gt;
+  &lt;ion-navbar color="secondary"&gt;
+    &lt;ion-title&gt;
+      {{title}}
+    &lt;/ion-title&gt;
+  &lt;/ion-navbar&gt;
+&lt;/ion-header&gt;
+
+&lt;ion-content&gt;
+  &lt;ion-card&gt;
+    &lt;ion-card-content&gt;
+      {{description}}
+    &lt;/ion-card-content&gt;
+  &lt;/ion-card&gt;
+&lt;/ion-content&gt;
+</code></pre>
+
+        <p>
+            Compared to the rest of the templates, this one is pretty straight forward. We’re just using the <code>&lt;ion-card&gt;</code>
+            component to display the <code>title</code> and
+            <code>description</code> which will be defined in <b>item-detail.ts</b>.
+        </p>
+
+        <aside class="special">
+            Modify <b>src/pages/item-detail/item-detail.ts</b> to reflect the following:
+        </aside>
+
+<pre><code>
+import { Component } from '@angular/core';
+import { NavParams } from 'ionic-angular';
+
+@Component({
+  selector: 'page-item-detail',
+  templateUrl: 'item-detail.html'
+})
+export class ItemDetailPage {
+
+  title;
+  description;
+
+  constructor(public navParams: NavParams){
+  }
+
+  ionViewDidLoad() {
+    this.title = this.navParams.get('item').title;
+    this.description = this.navParams.get('item').description;
+  }
+}
+</code></pre>
+
+        <p>
+            When we <b>push</b> this page we will pass in the data of the item that was clicked, and
+            then we just set the <b>title</b> and <b>description</b> to that of the item using <b>NavParams</b>.
+        </p>
+        <p>
+            Now all we have to do is set up the <b>viewItem</b> function in <b>home.ts</b> and import the new detail page.
+        </p>
+
+        <aside class="special">
+            Modify the <code>viewItem</code> function in <b>src/pages/home/home.ts</b> to reflect the following:
+        </aside>
+
+<pre><code>
+viewItem(item){
+  this.navCtrl.push(ItemDetailPage, {
+    item: item
+  });
+}
+</code></pre>
+
+        <aside class="special">
+            Add the following import line to the top of <b>src/pages/home/home.ts</b>:
+        </aside>
+
+<pre><code>
+import { ItemDetailPage } from '../item-detail/item-detail';
+</code></pre>
+
+        <p>
+            This will <b>push</b> the item detail page, and pass in the item in the list that was clicked.
+            If you try clicking on an item in the list now, you should see something like this:
+        </p>
+
+        <img src="../img/todo-detail-view.png" style="max-width: 300px">
+    </google-codelab-step>
+
+
+    <google-codelab-step label="Saving Data to Local Storage" duration="10">
+        <p>
+            The todo application will basically work now, but the data isn’t being stored anywhere so as soon as you refresh
+            the application you will lose all of your data (not ideal).
+        </p>
+        <p>
+            What we’re going to do now is create a service called <b>Data</b> that will handle storing and retrieving data for us.
+            We will use the <b>Storage</b> service Ionic provides to help us do this. <b>Storage</b> is Ionic’s generic storage service,
+            and it handles storing data in the best way possible while providing a consistent API for us to use.
+        </p>
+
+        <aside class="special">
+            Run the following command to generate a <em>Data Provider</em>:
+        </aside>
+
+        <code>
+            ionic g provider Data
+        </code>
+
+        <aside class="special">
+            Modify <b>src/providers/data.ts</b> to reflect the following:
+        </aside>
+
+<pre><code>
+import { Storage } from '@ionic/storage';
+import { Injectable } from '@angular/core';
+
+@Injectable()
+export class Data {
+
+  constructor(public storage: Storage){
+  }
+
+  getData() {
+    return this.storage.get('todos');
+  }
+
+  save(data){
+    this.storage.set('todos', data);
+  }
+}
+</code></pre>
+
+        <p>
+            This one is a little bit different to the rest of the classes we have been creating.
+            Instead of using the <code>@Component</code> decorator, we are instead declaring this class as an <code>@Injectable</code>.
+        </p>
+        <p>
+            In our constructor, we set up a reference to the <b>Storage</b> service as <code>storage</code>.
+            Our <code>save()</code> function simply takes in the array of all of the items and saves it to storage,
+            whenever the items change we will call this function.
+        </p>
+        <p>
+            We will also need to set up the <b>Storage</b> service (which requires us to include a <code>IonicStorageModule</code> import in the <code>@NgModule</code>),
+            as well as the <code>Data</code> provider, in our <b>app.module.ts</b> file.
+        </p>
+
+        <aside class="special">
+            Modify <b>src/app/app.module.ts</b> to reflect the following:
+        </aside>
+
+<pre><code>
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule, ErrorHandler } from '@angular/core';
+import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
+import { IonicStorageModule } from '@ionic/storage';
+import { MyApp } from './app.component';
+import { HomePage } from '../pages/home/home';
+import { AddItemPage } from '../pages/add-item/add-item';
+import { ItemDetailPage } from '../pages/item-detail/item-detail';
+import { Data } from '../providers/data';
+
+@NgModule({
+  declarations: [
+    MyApp,
+    HomePage,
+    AddItemPage,
+    ItemDetailPage
+  ],
+  imports: [
+    BrowserModule,
+    IonicModule.forRoot(MyApp),
+    IonicStorageModule.forRoot()
+  ],
+  bootstrap: [IonicApp],
+  entryComponents: [
+    MyApp,
+    HomePage,
+    AddItemPage,
+    ItemDetailPage
+  ],
+  providers: [Data, {provide: ErrorHandler, useClass: IonicErrorHandler}]
+})
+export class AppModule {}
+</code></pre>
+
+        <p>
+            Notice that we have declared the <code>Data</code> provider in the <c>providers</c> array,
+            rather than in the <code>declarations</code> or <code>entryComponents</code> arrays.
+            <code>IonicStorageModule.forRoot()</code> is set in the <code>imports</code> array.
+        </p>
+        <p>
+            Now we need to update <b>home.ts</b> to make use of this new service.
+        </p>
+
+        <aside class="special">
+            Modify <b>src/pages/home/home.ts</b> to reflect the following:
+        </aside>
+
+<pre><code>
+import { Component } from '@angular/core';
+import { ModalController, NavController } from 'ionic-angular';
+import { AddItemPage } from '../add-item/add-item'
+import { ItemDetailPage } from '../item-detail/item-detail';
+import { Data } from '../../providers/data';
+
+@Component({
+  selector: 'page-home',
+  templateUrl: 'home.html'
+})
+export class HomePage {
+
+  public items = [];
+
+  constructor(
+    public navCtrl: NavController,
+    public modalCtrl: ModalController,
+    public dataService: Data
+    ) {
+    this.dataService.getData().then((todos) => {
+      if(todos){
+        this.items = todos;
+      }
+    });
+  }
+
+  addItem(){
+    let addModal = this.modalCtrl.create(AddItemPage);
+
+    addModal.onDidDismiss((item) => {
+          if(item){
+            this.saveItem(item);
+          }
+    });
+
+    addModal.present();
+  }
+
+  saveItem(item){
+    this.items.push(item);
+    this.dataService.save(this.items);
+  }
+
+  viewItem(item){
+    this.navCtrl.push(ItemDetailPage, {
+      item: item
+    });
+  }
+}
+</code></pre>
+
+        <p>
+            Lastly, we’re <b>importing</b> the data service and passing it through to our constructor.
+            We are still setting the <code>items</code> to be empty to start off with, and fetching the data using the data service.
+            If there are any <code>items</code> returned it will set items to that, but if there is not it will just set it to an empty array again.
+        </p>
+        <p>
+            It’s important to note here that <code>getData()</code> returns a <code>promise</code> not the data itself. Fetching data from storage
+            is <code>asynchronous</code> which means our application will continue to run while the data loads. A promise allows us
+            to perform some action whenever that data has finished loading, without having to pause the whole application.
+        </p>
+        <p>
+            Finally, we also add a call to the <code>save()</code> function in the data service when a new item is being added.
+            So now this function will update our <code>items</code> array with the new data straight away,
+            but it will also save a copy to the data service so that it is available next time we come back to the application.
+        </p>
+    </google-codelab-step>
+
+    <google-codelab-step label="Congratulations!" duration="0">
+        <p>
+            You have learned how to use <b>Ionic Framework</b> to generate a simple todo app!
+        </p>
+
+        <h2 class="checklist">What we've covered:</h2>
+        <ul class="checklist">
+            <li>The basics of Ionic's (ie Angular's) component based app design.</li>
+            <li>Using <em>Ionic CLI</em> to generate new pages and data providers</li>
+            <li>Navigating between pages and launching modals</li>
+            <li>Inputing data using form elements</li>
+            <li>Passing data between page components</li>
+            <li>Persisting data <em>Ionic Storage</em></li>
+        </ul>
+
+        <aside class="special">
+            <p>
+                This <em>Codelab</em> has been adapted with permission from a
+                <a href="https://www.joshmorony.com/build-a-todo-app-from-scratch-with-ionic-2-video-tutorial/" target="_blank">tutorial</a>
+                posted on Josh Morony's blog. You can find many more excellent
+                <a href="https://www.joshmorony.com/category/ionic-tutorials/" target="_blank">Ionic tutorials</a> and
+                <a href="https://www.youtube.com/playlist?list=PLvLBrJpVwC7piPgR6u165HAnr-2Z80etB" target="_blank">videos</a> on his site.
+            </p>
+        </aside>
+
+
+        <google-codelab-survey survey-id="ionic-dc-todo-app-rating"><h4>How would rate the you experience with this code lab.</h4>
+            <paper-radio-group>
+                <paper-radio-button>Loved It! Learned a lot.</paper-radio-button>
+                <paper-radio-button>Pretty good. Could be Better.</paper-radio-button>
+                <paper-radio-button>Too advanced. Struggled with it.</paper-radio-button>
+            </paper-radio-group>
+        </google-codelab-survey>
+    </google-codelab-step>
+
+<!--
+    <google-codelab-step label="Using <google-map>" duration="5">
+
+        <p>The <a href="https://elements.polymer-project.org/browse?package=google-web-components">Google Web
+            Components</a>&#160;provide the <code>&lt;google-map&gt;</code>&#160;element for declaratively rendering a
+            Google Map. To use it, you first need to install it using Bower.</p>
+        <aside class="special"><p><strong>What is Bower?</strong></p>
+            <p><a href="http://bower.io/">Bower</a>&#160;is a client-side package management tool that can be used with
+                any web app. When working with Polymer, it simplifies the hassles of dependency management. Every
+                component defines its own set of dependencies. When you use Bower to install a component, the
+                component's dependencies are installed alongside it under <code>bower_components/</code>.</p></aside>
+
+        <h2>Install the
+            <google-map> element
+        </h2>
+        <p>Normally, you'd run <code>bower install GoogleWebComponents/google-map --save</code>&#160;on the command line
+            to install <code>&lt;google-map&gt;</code> and save it as a dependency. However, Chrome Dev Editor does not
+            have a command line for running Bower commands. Instead, you need to manually edit <code>bower.json</code>&#160;to
+            include <code>google-map</code>, then run Chrome Dev Editor's <strong>Bower Update</strong>&#160;feature.
+            <strong>Bower Update</strong>&#160;checks the dependencies in <code>bower.json</code>&#160;and installs any
+            missing ones.</p>
+        <ol start="1">
+            <li>Edit <code>bower.json</code>&#160;and add <code>google-map</code>&#160;to the <code>dependencies</code>&#160;object:
+            </li>
+        </ol>
+        <pre class="indented"><code language="">"dependencies": {
+  "iron-elements": "PolymerElements/iron-elements#^1.0.0",
+  "paper-elements": "PolymerElements/paper-elements#^1.0.1",
+  "google-map": "GoogleWebComponents/google-map#^1.0.3"
+}</code></pre>
+        <ol start="2">
+            <li>Right-click the <code>bower.json</code>&#160;filename in the editor.</li>
+            <li>Select <strong>Bower Update</strong>&#160;from the context menu.</li>
+        </ol>
+        <p><img src="../img/img-6.png" style="max-width: 220px"></p>
+        <p>The download may take few seconds. You can verify that <code>&lt;google-map&gt;</code>&#160;(and any
+            dependencies) were installed by checking that <code>bower_components/google-map/</code>&#160;was created and
+            populated.</p>
+        <h2>Use the
+            <google-map> element
+        </h2>
+        <p>To employ <code>&lt;google-map&gt;</code>, you need to:</p>
+        <ol start="1">
+            <li>Use an <a href="http://www.html5rocks.com/en/tutorials/webcomponents/imports/">HTML Import</a>&#160;to
+                load it in <code>index.html</code>.
+            </li>
+            <li>Declare an instance of the element on the page.</li>
+        </ol>
+        <p>In <code>index.html</code>,<strong>&#160;remove all other HTML imports</strong>&#160;<strong>in the</strong>
+            <strong>&lt;head&gt;</strong>&#160;and replace them with a single import that loads
+            <code>google-map.html</code>:</p>
+        <h3>index.html</h3>
+
+        <pre><code language="">&lt;head&gt;
+  ....
+  &lt;script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"&gt;&lt;/script&gt;
+  &lt;link rel="import" href="bower_components/google-map/google-map.html"&gt;
+&lt;/head&gt;</code></pre>
+
+        <aside class="warning"><p><strong>Important</strong>: all imports need to come
+            <strong>after</strong>&#160;<code>webcomponents-lite.min.js</code>&#160;so the polyfill can properly load
+            them.</p></aside>
+        <p>Next, replace the contents of <code>&lt;body&gt;</code>&#160;with an instance of
+            <code>&lt;google-map&gt;</code>:</p>
+        <h3>index.html</h3>
+
+        <pre><code language="">&lt;body unresolved&gt;
+  &lt;google-map latitude="37.779" longitude="-122.3892" zoom="13"&gt;&lt;/google-map&gt;
+&lt;/body&gt;</code></pre>
+        <p>As you can see, using <code>&lt;google-map&gt;</code>&#160;is completely declarative! The map is centered
+            using the <code>latitude</code>&#160;and <code>longitude</code>&#160;attributes and its zoom level is set by
+            the <code>zoom</code>&#160;attribute.</p>
+        <h3>Style the map</h3>
+        <p>If you run the app right now, nothing will display. In order for the map to properly display itself, you need
+            to set its container (in this case, <code>&lt;body&gt;</code>) to have a fixed height.</p>
+        <p>Open <code>styles.css</code>&#160;and replace its contents with default styling:</p>
+        <h3>styles.css</h3>
+
+        <pre><code language="">body, html {
+  font-family: 'Roboto', Arial, sans-serif;
+  height: 100%;
+  margin: 0;
+}</code></pre>
+
+        <h3>Add a marker</h3>
+        <p><code>&lt;google-map&gt;</code>&#160;supports adding map markers to the map by declaring <code>&lt;google-map-marker&gt;</code>&#160;elements
+            as children. The marker locations are also set using <code>latitude</code>&#160;and <code>longitude</code>&#160;attributes.
+        </p>
+        <p>Back in <strong>index.html</strong>, add a draggable <code>&lt;google-map-marker&gt;</code>&#160;to the map:
+        </p>
+        <h3>index.html</h3>
+
+        <pre><code language="">&lt;google-map latitude="37.779" longitude="-122.3892" zoom="13" disable-default-ui&gt;
+  &lt;google-map-marker latitude="37.779" longitude="-122.3892"
+      title="Go Giants!" draggable="true"&gt;&lt;/google-map-marker&gt;
+&lt;/google-map&gt;</code></pre>
+        <p>Notice that we've also disabled the map's controls by setting <code>disableDefaultUi</code>&#160;to true.
+            Since it's a boolean property, its presence as an HTML attribute makes it truthy.</p>
+        <h2>Run the app</h2>
+        <p>If you haven't already done so, hit the <img src="../img/img-7.png" style="max-width: 29px">&#160;button. At this
+            point, you should see a map that takes up the entire viewport and has a single marker pin.</p>
+        <p><img src="../img/img-8.png" style="max-width: 624px"></p>
+        <h3 class="faq">Frequently Asked Questions</h3>
+        <ul class="faq">
+            <li><a href="https://elements.polymer-project.org/elements/google-map">Where are the reference docs for &lt;google-map&gt;
+                and &lt;google-map&gt;</a>?
+            </li>
+            <li><a href="https://stackoverflow.com">stackoverflow link</a></li>
+            <li><a href="https://cloud.google.com">google cloud link</a></li>
+        </ul>
+
+    </google-codelab-step>
+-->
+</google-codelab>
+
+</body>
+</html>
