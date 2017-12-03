@@ -52,8 +52,8 @@
                 color: #fff;
                 background-color: #C62828;
                 --app-header-background-front-layer: {
-                    background-image: url(https://app-layout-assets.appspot.com/assets/test-drive.jpg);
-                    background-position: 50% 10%;
+                    background-image: url(img/dc-night-2.jpg);
+                    background-position: 50% 45%;
                 };
             }
 
@@ -65,51 +65,14 @@
 
         <app-drawer-layout>
 
-            <app-drawer swipe-open slot="drawer">
-                <section>
-                    <h2>app-header Properties</h2>
-                    <paper-checkbox checked="{{condenses}}">
-                        condenses
-                    </paper-checkbox>
-                    <paper-checkbox checked="{{fixed}}">
-                        fixed
-                    </paper-checkbox>
-                    <paper-checkbox checked="{{reveals}}">
-                        reveals
-                    </paper-checkbox>
-                    <paper-checkbox checked="{{shadow}}">
-                        shadow
-                    </paper-checkbox>
-
-                    <h2>app-header Effects</h2>
-                    <paper-checkbox checked="{{blendBackground}}">
-                        blend-background
-                    </paper-checkbox>
-                    <paper-checkbox checked="{{fadeBackground}}">
-                        fade-background
-                    </paper-checkbox>
-                    <paper-checkbox checked="{{parallaxBackground}}">
-                        parallax-background
-                    </paper-checkbox>
-                    <paper-checkbox checked="{{resizeSnappedTitle}}">
-                        resize-snapped-title
-                    </paper-checkbox>
-                    <paper-checkbox checked="{{resizeTitle}}">
-                        resize-title
-                    </paper-checkbox>
-                    <paper-checkbox checked="{{waterfall}}">
-                        waterfall
-                    </paper-checkbox>
-                </section>
-            </app-drawer>
+            <!--<app-drawer swipe-open slot="drawer">-->
+                <!--<nav></nav>-->
+            <!--</app-drawer>-->
 
             <app-header-layout>
 
-                <app-header
-                        condenses="true"
-                        fixed="true"
-                        shadow="true"
-                        effects="[[_computeEffects(blendBackground, fadeBackground, parallaxBackground, resizeSnappedTitle, resizeTitle, waterfall)]]"
+                <app-header condenses fixed shadow
+                        effects="blend-background parallax-background resize-title"
                         slot="header">
 
                     <app-toolbar>
@@ -125,7 +88,7 @@
 
                 </app-header>
 
-                <sample-content size="8"></sample-content>
+                <sample-content size="5"></sample-content>
 
                 <paper-card>Oink</paper-card>
 
@@ -139,89 +102,7 @@
 
         Polymer({
 
-            is: 'home-page',
-
-            properties: {
-
-                condenses: {
-                    type: Boolean,
-                    value: true
-                },
-
-                fixed: {
-                    type: Boolean,
-                    value: true
-                },
-
-                reveals: {
-                    type: Boolean,
-                    value: false
-                },
-
-                shadow: {
-                    type: Boolean,
-                    value: false
-                },
-
-                blendBackground: {
-                    type: Boolean,
-                    value: true
-                },
-
-                fadeBackground: {
-                    type: Boolean,
-                    value: false
-                },
-
-                parallaxBackground: {
-                    type: Boolean,
-                    value: true
-                },
-
-                resizeSnappedTitle: {
-                    type: Boolean,
-                    value: false
-                },
-
-                resizeTitle: {
-                    type: Boolean,
-                    value: true
-                },
-
-                waterfall: {
-                    type: Boolean,
-                    value: true
-                }
-
-            },
-
-            observers: [
-                '_removeIf("fixed", reveals)',
-                '_removeIf("reveals", fixed)',
-                '_removeIf("shadow", waterfall)',
-                '_removeIf("blendBackground", fadeBackground)',
-                '_removeIf("fadeBackground", blendBackground)',
-                '_removeIf("resizeSnappedTitle", resizeTitle)',
-                '_removeIf("resizeTitle", resizeSnappedTitle)',
-                '_removeIf("waterfall", shadow)'
-            ],
-
-            _computeEffects: function() {
-                return [
-                    this.blendBackground ? 'blend-background ' : '',
-                    this.fadeBackground ? 'fade-background ' : '',
-                    this.parallaxBackground ? 'parallax-background ' : '',
-                    this.resizeSnappedTitle ? 'resize-snapped-title ' : '',
-                    this.resizeTitle ? 'resize-title ' : '',
-                    this.waterfall ? 'waterfall ' : ''
-                ].join('');
-            },
-
-            _removeIf: function(propName, value) {
-                if (this[propName] && value) {
-                    this[propName] = false;
-                }
-            }
+            is: 'home-page'
 
         });
 
