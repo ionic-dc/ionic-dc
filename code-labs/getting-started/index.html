@@ -43,9 +43,14 @@
             </p>
             <p>
                 If you haven't already you will want to install the <em>Ionic CLI</em> and <em>Cordova</em> by running the following command.
-                You may need to add <code>sudo</code> in front of this command to install globally:
+                You may need to add <code>sudo</code> in front of this command to install on Mac:
             </p>
             <code>npm install -g ionic cordova</code>
+            <p>
+                If you get any warnings about <em>Node</em> or <em>NPM</em> being out of date you may need to install the latest version
+                of <a href="https://nodejs.org/en/" target="_blank">Node.js</a> and run:
+            </p>
+            <code>npm install -g npm</code>
         </aside>
 
         <h2>Generate a new Ionic Project</h2>
@@ -56,7 +61,15 @@
         <code>ionic start ionic-todo blank</code>
 
         <p>
-            Then open the <b>/ionic-todo</b> folder in your preferred code editor (VSCode & WebStorm works great for Ionic projects).
+            It may take a minuter or two to run. You can say no to making the app <em>cordova</em> capable and you don't need to sign in to <em>Ionic Pro</em>.
+            After the app is generated open that folder in your command prompt:
+        </p>
+        
+        <code>cd ionic-todo</code>
+
+        <p>
+            Then open the <b>/ionic-todo</b> folder in your preferred code editor (<a href="https://code.visualstudio.com/" target="_blank">VSCode</a>
+            or <a href="https://atom.io/" target="_blank">Atom</a> work great for Ionic projects).
         </p>
 
         <h2>Anatomy of an Ionic Project</h2>
@@ -75,27 +88,24 @@
             which don’t have a html template or scss styling, but are similar in structure component's typescript class.
             These providers and will be placed in a providers folder.
         </p>
-        <p>
-            Open the <b>src/app/app.component.ts</b> file that is auto generated:
-        </p>
+
+
+
+        <aside class="special">
+            Replace <b>src/app/app.component.ts</b> to reflect the following:
+        </aside>
 
 <pre><code>
 import { Component } from '@angular/core';
-import { Platform } from 'ionic-angular';
 
 import { HomePage } from '../pages/home/home';
-
 @Component({
   templateUrl: 'app.html'
 })
 export class MyApp {
-
   rootPage:any = HomePage;
 
-  constructor(platform: Platform) {
-    platform.ready().then(() => {
-
-    });
+  constructor() {
   }
 }
 </code></pre>
@@ -165,7 +175,7 @@ rootPage: any = HomePage;
         <h2>Creating the Home Page Template</h2>
 
         <aside class="special">
-            Modify <b>src/pages/home/home.html</b> to reflect the following:
+            Replace <b>src/pages/home/home.html</b> to reflect the following:
         </aside>
 
 <pre><code>
@@ -226,7 +236,7 @@ rootPage: any = HomePage;
         </p>
 
         <aside class="special">
-            Modify <b>src/pages/home/home.ts</b> to reflect the following:
+            Replace <b>src/pages/home/home.ts</b> to reflect the following:
         </aside>
 
 <pre><code>
@@ -267,10 +277,16 @@ export class HomePage {
             it automatically creates a member variable for us.
             This means that we can now reference the <code>NavController</code> anywhere in this class by using <code>this.navCtrl</code>.
         </p>
+
+        <aside class="special">
+            Run the following command to preview that app in the browser:
+        </aside>
+
+        <code>ionic serve -l</code>
+
         <p>
             Now that we’ve set up some dummy data (we use the <code>ionViewDidLoad</code> lifecycle hook to do this, which is
-            triggered as soon as the page is loaded), you should be able to see items rendered in your list when you run
-            <code>ionic serve</code> in your console:
+            triggered as soon as the page is loaded), you should be able to see items rendered in your list when you run the app.
         </p>
 
         <img src="../img/todo-list.png" alt="ToDo List Screen" style="max-width: 300px;">
@@ -301,21 +317,12 @@ this.navCtrl.pop(); // To navigate backwards in the stack
         <h2>Generate the Add Item Page</h2>
 
         <aside class="special">
-            Run the following command to generate a new <b>add-item</b> page:
+            Run the following command (in a new terminal tab / cmd prompt window) to generate a new <b>add-item</b> page:
         </aside>
 
        <code>
-ionic g page AddItem
-        </code>
-
-        <aside class="warning">
-            <p>
-                <b>IMPORTANT:</b> When pages are generated in Ionic, something called “lazy loading” is set up by default.
-                To keep things simple, we will not be covering that in this tutorial.
-                To make sure you do not run into any issues, you should delete the <b>add-item.module.ts</b> file that is generated.
-                The <code>@IonicPage()</code> decorator should also be removed from the <b>add-item.ts</b> file.
-            </p>
-        </aside>
+ionic g page AddItem --no-module
+       </code>
 
         <p>
             Whenever we create a new page, we need to ensure that it is imported into our <b>app.module.ts</b>, 
@@ -323,7 +330,7 @@ ionic g page AddItem
         </p>
 
         <aside class="special">
-            Modify <b>src/app/app.module.ts</b> to reflect the following:
+            Replace <b>src/app/app.module.ts</b> to reflect the following:
         </aside>
 
 <pre><code>
@@ -358,7 +365,7 @@ export class AppModule {}
         <h2>Setting up the Add Item Template</h2>
 
         <aside class="special">
-            Modify <b>src/pages/add-item/add-item.html</b> to reflect the following:
+            Replace <b>src/pages/add-item/add-item.html</b> to reflect the following:
         </aside>
 
 <pre><code>
@@ -391,7 +398,7 @@ export class AppModule {}
 </code></pre>
 
         <p>
-            We a button calling a <code>saveItem()</code> function that we will define in <b>add-item.ts</b> shortly.
+            We made a button calling the <code>saveItem()</code> function that we will define in <b>add-item.ts</b> shortly.
             We also have a button that references a <code>close()</code> function –
             since we will eventually launch this page as a <code>Modal</code> we want the ability to dismiss the page, 
             so we will also be defining this function in <b>add-item.ts</b>.
@@ -410,7 +417,7 @@ export class AppModule {}
         <h2>Setting up the Add Item Class</h2>
 
         <aside class="special">
-            Modify <b>src/pages/add-item/add-item.ts</b> to reflect the following:
+            Replace <b>src/pages/add-item/add-item.ts</b> to reflect the following:
         </aside>
 
 <pre><code>
@@ -464,7 +471,7 @@ export class AddItemPage {
             so that we can create that view when the user clicks <b>Add Item</b>.
         </p>
         <aside class="special">
-            Modify <b>src/pages/home/home.ts</b> to reflect the following:
+            Replace <b>src/pages/home/home.ts</b> to reflect the following:
         </aside>
 
 <pre><code>
@@ -536,7 +543,7 @@ export class HomePage {
         </aside>
 
         <code>
-            ionic g page ItemDetail
+            ionic g page ItemDetail --no-module
         </code>
 
         <p>
@@ -544,7 +551,7 @@ export class HomePage {
         </p>
         
         <aside class="special">
-            Modify <b>src/app/app.module.ts</b> to reflect the following:
+            Replace <b>src/app/app.module.ts</b> to reflect the following:
         </aside>
 
 <pre><code>
@@ -586,7 +593,7 @@ export class AppModule {}
         </p>
 
         <aside class="special">
-            Modify <b>src/pages/item-detail/item-detail.html</b> to reflect the following:
+            Replace <b>src/pages/item-detail/item-detail.html</b> to reflect the following:
         </aside>
 
 <pre><code>
@@ -614,7 +621,7 @@ export class AppModule {}
         </p>
 
         <aside class="special">
-            Modify <b>src/pages/item-detail/item-detail.ts</b> to reflect the following:
+            Replace <b>src/pages/item-detail/item-detail.ts</b> to reflect the following:
         </aside>
 
 <pre><code>
@@ -648,8 +655,18 @@ export class ItemDetailPage {
             Now all we have to do is set up the <b>viewItem</b> function in <b>home.ts</b> and import the new detail page.
         </p>
 
+
+
         <aside class="special">
-            Modify the <code>viewItem</code> function in <b>src/pages/home/home.ts</b> to reflect the following:
+            Add the following import line to the top of <b>src/pages/home/home.ts</b>:
+        </aside>
+
+        <pre><code>
+import { ItemDetailPage } from '../item-detail/item-detail';
+</code></pre>
+
+        <aside class="special">
+            Replace the <code>viewItem</code> function in <b>src/pages/home/home.ts</b> to reflect the following:
         </aside>
 
 <pre><code>
@@ -658,14 +675,6 @@ viewItem(item){
     item: item
   });
 }
-</code></pre>
-
-        <aside class="special">
-            Add the following import line to the top of <b>src/pages/home/home.ts</b>:
-        </aside>
-
-<pre><code>
-import { ItemDetailPage } from '../item-detail/item-detail';
 </code></pre>
 
         <p>
@@ -693,11 +702,11 @@ import { ItemDetailPage } from '../item-detail/item-detail';
         </aside>
 
         <code>
-            ionic g provider Data
+            ionic g provider TodoService
         </code>
 
         <aside class="special">
-            Modify <b>src/providers/data.ts</b> to reflect the following:
+            Replace <b>src/providers/todo-service/todo-service.ts</b> to reflect the following:
         </aside>
 
 <pre><code>
@@ -705,7 +714,7 @@ import { Storage } from '@ionic/storage';
 import { Injectable } from '@angular/core';
 
 @Injectable()
-export class Data {
+export class TodoServiceProvider {
 
   constructor(public storage: Storage){
   }
@@ -735,7 +744,7 @@ export class Data {
         </p>
 
         <aside class="special">
-            Modify <b>src/app/app.module.ts</b> to reflect the following:
+            Replace <b>src/app/app.module.ts</b> to reflect the following:
         </aside>
 
 <pre><code>
@@ -747,7 +756,7 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { AddItemPage } from '../pages/add-item/add-item';
 import { ItemDetailPage } from '../pages/item-detail/item-detail';
-import { Data } from '../providers/data';
+import { TodoServiceProvider } from '../providers/todo-service/todo-service';
 
 @NgModule({
   declarations: [
@@ -768,7 +777,7 @@ import { Data } from '../providers/data';
     AddItemPage,
     ItemDetailPage
   ],
-  providers: [Data, {provide: ErrorHandler, useClass: IonicErrorHandler}]
+  providers: [TodoServiceProvider, {provide: ErrorHandler, useClass: IonicErrorHandler}]
 })
 export class AppModule {}
 </code></pre>
@@ -783,7 +792,7 @@ export class AppModule {}
         </p>
 
         <aside class="special">
-            Modify <b>src/pages/home/home.ts</b> to reflect the following:
+            Replace <b>src/pages/home/home.ts</b> to reflect the following:
         </aside>
 
 <pre><code>
@@ -791,7 +800,7 @@ import { Component } from '@angular/core';
 import { ModalController, NavController } from 'ionic-angular';
 import { AddItemPage } from '../add-item/add-item'
 import { ItemDetailPage } from '../item-detail/item-detail';
-import { Data } from '../../providers/data';
+import { TodoServiceProvider } from '../../providers/todo-service/todo-service';
 
 @Component({
   selector: 'page-home',
@@ -804,7 +813,7 @@ export class HomePage {
   constructor(
     public navCtrl: NavController,
     public modalCtrl: ModalController,
-    public dataService: Data
+    public dataService: TodoServiceProvider
     ) {
     this.dataService.getData().then((todos) => {
       if(todos){
@@ -890,119 +899,6 @@ export class HomePage {
         </google-codelab-survey>
     </google-codelab-step>
 
-<!--
-    <google-codelab-step label="Using <google-map>" duration="5">
-
-        <p>The <a href="https://elements.polymer-project.org/browse?package=google-web-components">Google Web
-            Components</a>&#160;provide the <code>&lt;google-map&gt;</code>&#160;element for declaratively rendering a
-            Google Map. To use it, you first need to install it using Bower.</p>
-        <aside class="special"><p><strong>What is Bower?</strong></p>
-            <p><a href="http://bower.io/">Bower</a>&#160;is a client-side package management tool that can be used with
-                any web app. When working with Polymer, it simplifies the hassles of dependency management. Every
-                component defines its own set of dependencies. When you use Bower to install a component, the
-                component's dependencies are installed alongside it under <code>bower_components/</code>.</p></aside>
-
-        <h2>Install the
-            <google-map> element
-        </h2>
-        <p>Normally, you'd run <code>bower install GoogleWebComponents/google-map --save</code>&#160;on the command line
-            to install <code>&lt;google-map&gt;</code> and save it as a dependency. However, Chrome Dev Editor does not
-            have a command line for running Bower commands. Instead, you need to manually edit <code>bower.json</code>&#160;to
-            include <code>google-map</code>, then run Chrome Dev Editor's <strong>Bower Update</strong>&#160;feature.
-            <strong>Bower Update</strong>&#160;checks the dependencies in <code>bower.json</code>&#160;and installs any
-            missing ones.</p>
-        <ol start="1">
-            <li>Edit <code>bower.json</code>&#160;and add <code>google-map</code>&#160;to the <code>dependencies</code>&#160;object:
-            </li>
-        </ol>
-        <pre class="indented"><code language="">"dependencies": {
-  "iron-elements": "PolymerElements/iron-elements#^1.0.0",
-  "paper-elements": "PolymerElements/paper-elements#^1.0.1",
-  "google-map": "GoogleWebComponents/google-map#^1.0.3"
-}</code></pre>
-        <ol start="2">
-            <li>Right-click the <code>bower.json</code>&#160;filename in the editor.</li>
-            <li>Select <strong>Bower Update</strong>&#160;from the context menu.</li>
-        </ol>
-        <p><img src="../img/img-6.png" style="max-width: 220px"></p>
-        <p>The download may take few seconds. You can verify that <code>&lt;google-map&gt;</code>&#160;(and any
-            dependencies) were installed by checking that <code>bower_components/google-map/</code>&#160;was created and
-            populated.</p>
-        <h2>Use the
-            <google-map> element
-        </h2>
-        <p>To employ <code>&lt;google-map&gt;</code>, you need to:</p>
-        <ol start="1">
-            <li>Use an <a href="http://www.html5rocks.com/en/tutorials/webcomponents/imports/">HTML Import</a>&#160;to
-                load it in <code>index.html</code>.
-            </li>
-            <li>Declare an instance of the element on the page.</li>
-        </ol>
-        <p>In <code>index.html</code>,<strong>&#160;remove all other HTML imports</strong>&#160;<strong>in the</strong>
-            <strong>&lt;head&gt;</strong>&#160;and replace them with a single import that loads
-            <code>google-map.html</code>:</p>
-        <h3>index.html</h3>
-
-        <pre><code language="">&lt;head&gt;
-  ....
-  &lt;script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"&gt;&lt;/script&gt;
-  &lt;link rel="import" href="bower_components/google-map/google-map.html"&gt;
-&lt;/head&gt;</code></pre>
-
-        <aside class="warning"><p><strong>Important</strong>: all imports need to come
-            <strong>after</strong>&#160;<code>webcomponents-lite.min.js</code>&#160;so the polyfill can properly load
-            them.</p></aside>
-        <p>Next, replace the contents of <code>&lt;body&gt;</code>&#160;with an instance of
-            <code>&lt;google-map&gt;</code>:</p>
-        <h3>index.html</h3>
-
-        <pre><code language="">&lt;body unresolved&gt;
-  &lt;google-map latitude="37.779" longitude="-122.3892" zoom="13"&gt;&lt;/google-map&gt;
-&lt;/body&gt;</code></pre>
-        <p>As you can see, using <code>&lt;google-map&gt;</code>&#160;is completely declarative! The map is centered
-            using the <code>latitude</code>&#160;and <code>longitude</code>&#160;attributes and its zoom level is set by
-            the <code>zoom</code>&#160;attribute.</p>
-        <h3>Style the map</h3>
-        <p>If you run the app right now, nothing will display. In order for the map to properly display itself, you need
-            to set its container (in this case, <code>&lt;body&gt;</code>) to have a fixed height.</p>
-        <p>Open <code>styles.css</code>&#160;and replace its contents with default styling:</p>
-        <h3>styles.css</h3>
-
-        <pre><code language="">body, html {
-  font-family: 'Roboto', Arial, sans-serif;
-  height: 100%;
-  margin: 0;
-}</code></pre>
-
-        <h3>Add a marker</h3>
-        <p><code>&lt;google-map&gt;</code>&#160;supports adding map markers to the map by declaring <code>&lt;google-map-marker&gt;</code>&#160;elements
-            as children. The marker locations are also set using <code>latitude</code>&#160;and <code>longitude</code>&#160;attributes.
-        </p>
-        <p>Back in <strong>index.html</strong>, add a draggable <code>&lt;google-map-marker&gt;</code>&#160;to the map:
-        </p>
-        <h3>index.html</h3>
-
-        <pre><code language="">&lt;google-map latitude="37.779" longitude="-122.3892" zoom="13" disable-default-ui&gt;
-  &lt;google-map-marker latitude="37.779" longitude="-122.3892"
-      title="Go Giants!" draggable="true"&gt;&lt;/google-map-marker&gt;
-&lt;/google-map&gt;</code></pre>
-        <p>Notice that we've also disabled the map's controls by setting <code>disableDefaultUi</code>&#160;to true.
-            Since it's a boolean property, its presence as an HTML attribute makes it truthy.</p>
-        <h2>Run the app</h2>
-        <p>If you haven't already done so, hit the <img src="../img/img-7.png" style="max-width: 29px">&#160;button. At this
-            point, you should see a map that takes up the entire viewport and has a single marker pin.</p>
-        <p><img src="../img/img-8.png" style="max-width: 624px"></p>
-        <h3 class="faq">Frequently Asked Questions</h3>
-        <ul class="faq">
-            <li><a href="https://elements.polymer-project.org/elements/google-map">Where are the reference docs for &lt;google-map&gt;
-                and &lt;google-map&gt;</a>?
-            </li>
-            <li><a href="https://stackoverflow.com">stackoverflow link</a></li>
-            <li><a href="https://cloud.google.com">google cloud link</a></li>
-        </ul>
-
-    </google-codelab-step>
--->
 </google-codelab>
 
 </body>
