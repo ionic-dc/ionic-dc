@@ -12,8 +12,7 @@
 <link rel="import" href="bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="bower_components/paper-card/paper-card.html">
-
-<link rel="import" href="bower_components/app-layout/demo/sample-content.html">
+<link rel="import" href="bower_components/app-layout/app-grid/app-grid-style.html">
 
 <iron-iconset-svg name="app" size="24">
     <svg><defs>
@@ -25,7 +24,15 @@
 
     <template>
 
-        <style>
+        <style include="app-grid-style">
+
+            :host {
+                display: block;
+                --app-grid-columns: 2;
+                --app-grid-gutter: 10px;
+                --app-grid-expandible-item-columns: 2;
+                --paper-icon-button-ink-color: white;
+            }
 
             app-drawer-layout:not([narrow]) [drawer-toggle] {
                 display: none;
@@ -43,11 +50,6 @@
                 font-size: 18px;
             }
 
-            app-drawer paper-checkbox {
-                display: block;
-                padding: 18px;
-            }
-
             app-header {
                 color: #fff;
                 background-color: #4285f4;
@@ -59,6 +61,63 @@
 
             [main-title] {
                 font-size: 2em;
+                padding-left: 75px;
+                padding-bottom: 40px;
+            }
+
+            ul {
+                padding: 0;
+                list-style: none;
+            }
+
+            .centered-container {
+                margin-top: 40px;
+                max-width: 800px;
+                margin: 40px auto;
+            }
+
+            .item {
+                height: 200px;
+                position: relative;
+                background-color: white;
+                background-size: cover;
+                background-position: center center;
+            }
+
+            .item:first-child {
+                height: 20vmax;
+                @apply(--app-grid-expandible-item);
+            }
+            
+            .item a {
+                display: block;
+                width: 100%;
+                height: 100%;
+            }
+
+            .item-title {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background-color: rgba(0, 0, 0, 0.2);
+                color: white;
+                font-weight: 400;
+                padding: 16px;
+            }
+
+            @media(max-width: 799px) {
+
+                .centered-container {
+                    margin: 10px 5px;
+                }
+
+                :host {
+                    --app-grid-columns: 1;
+                    --app-grid-gutter: 5px;
+                    --app-grid-item-height: 200px;
+                }
+
             }
 
         </style>
@@ -88,9 +147,23 @@
 
                 </app-header>
 
-                <sample-content size="5"></sample-content>
-
-                <paper-card>Oink</paper-card>
+                <div class="centered-container">
+                    <ul class="app-grid">
+                        <li class="item" style="background-image: url(img/ionic-img.jpeg)">
+                            <div class="item-title">Welcome to Ionic DC</div>
+                        </li>
+                        <li class="item" style="background-image: url(img/slides-graphic.png)">
+                            <a href="/slides/intro">
+                                <div class="item-title">What is Ionic Slides</div>
+                            </a>
+                        </li>
+                        <li class="item" style="background-image: url(img/code-graphic.png)">
+                            <a href="/code-labs/getting-started">
+                                <div class="item-title">Getting Started Codelab</div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
 
             </app-header-layout>
 
@@ -102,8 +175,18 @@
 
         Polymer({
 
-            is: 'home-page'
+            is: 'home-page',
 
+            attached: function() {
+                this._updateGridStyles = this._updateGridStyles || function() {
+                    this.updateStyles();
+                }.bind(this);
+                window.addEventListener('resize', this._updateGridStyles);
+            },
+
+            detached: function() {
+                window.removeEventListener('resize', this._updateGridStyles);
+            }
         });
 
     </script>
