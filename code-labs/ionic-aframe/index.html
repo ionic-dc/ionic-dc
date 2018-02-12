@@ -1,0 +1,210 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>Ionic DC Codelab - Getting Started</title>
+    <script>
+        window.Polymer = {
+            dom: 'shadow',
+            lazyRegister: 'max',
+            useNativeCSSProperties: true
+        };
+    </script>
+    <link rel="stylesheet"
+          href="//fonts.googleapis.com/css?family=Roboto:300,400,400italic,500,500italic,700,700italic|Roboto+Mono:400,700">
+    <link rel="import" href="../../codelab_components/google-codelab-elements.html">
+    <style is="custom-style">
+        body {
+            font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial;
+            background: var(--google-codelab-background, --paper-grey-300);
+        }
+    </style>
+</head>
+<body>
+
+<google-codelab title="Augmented Reality: A-Frame With Ionic Components"
+                feedback-link="https://github.com/ionic-dc/ionic-dc.github.io/issues"
+                environment="web"
+                last-updated="2018-02-11">
+
+    <google-codelab-step label="Overview & Setup" duration="5">
+        <h2 class="checklist">We will be building a <em>Todo App</em> that will allow a user to:</h2>
+        <ul class="checklist">
+            <li>View a list of todo items</li>
+            <li>Add new todo items</li>
+            <li>View details of a specific todo</li>
+            <li>Save the items to local storage</li>
+        </ul>
+
+        <aside class="warning">
+            <p>
+                <b>Before You Get Started!</b>
+            </p>
+            <p>
+                If you haven't already you will want to install the <em>Ionic CLI</em> and <em>Cordova</em> by running the following command.
+                You may need to add <code>sudo</code> in front of this command to install on Mac:
+            </p>
+            <code>npm install -g ionic cordova</code>
+            <p>
+                If you get any warnings about <em>Node</em> or <em>NPM</em> being out of date you may need to install the latest version
+                of <a href="https://nodejs.org/en/" target="_blank">Node.js</a> and run:
+            </p>
+            <code>npm install -g npm</code>
+        </aside>
+
+        <h2>Generate a new Ionic Project</h2>
+        <p>
+            Now that you have installed the Ionic CLI you can generate your project using the blank template:
+        </p>
+
+        <code>ionic start ionic-todo blank</code>
+
+        <p>
+            It may take a minuter or two to run. You can say no to making the app <em>cordova</em> capable and you don't need to sign in to <em>Ionic Pro</em>.
+            After the app is generated open that folder in your command prompt:
+        </p>
+        
+        <code>cd ionic-todo</code>
+
+        <p>
+            Then open the <b>/ionic-todo</b> folder in your preferred code editor (<a href="https://code.visualstudio.com/" target="_blank">VSCode</a>
+            or <a href="https://atom.io/" target="_blank">Atom</a> work great for Ionic projects).
+        </p>
+
+        <h2>Anatomy of an Ionic Project</h2>
+        <p>
+            Ionic is built on the <em>Angular</em> framework for developing web applications so developing an Ionic 2+ application
+            will be very similar to developing a standard Angular 2+ app.
+        </p>
+        <p>
+            All of the <em>components</em> for our application will be in the <b>/src</b> folder
+            (including the root component in the <b>/app</b> folder, and all of our page components in the <b>/pages</b> folder).
+            A component will consist of a template (<b>.html</b> file defining structure and elements), class definition (<b>.ts</b> file defining actions and logic)
+            and styles (<b>.scss</b> file defining layout and appearance).
+        </p>
+        <p>
+            Along with components, you have <em>providers</em> (like the data service we will create later)
+            which don’t have a html template or scss styling, but are similar in structure component's typescript class.
+            These providers and will be placed in a providers folder.
+        </p>
+
+
+
+        <aside class="special">
+            Replace <b>src/app/app.component.ts</b> to reflect the following:
+        </aside>
+
+<pre><code>
+import { Component } from '@angular/core';
+
+import { HomePage } from '../pages/home/home';
+@Component({
+  templateUrl: 'app.html'
+})
+export class MyApp {
+  rootPage:any = HomePage;
+
+  constructor() {
+  }
+}
+</code></pre>
+
+        <p>
+            The <b>app.component.ts</b> file defines our <b>root component</b>. This component is special when compared to the rest of
+            the components because it is the first component that will be added to the application, and from there we can
+            display more components, which can then add even more components and so on. Basically, our application structure
+            is like a tree with the root component at the root of that tree. So, it’s important that our root component
+            knows where to find our <b>HomePage</b> as it will need to set it as the root page. Notice that we are importing the
+            <b>HomePage</b> at the top of this file, and then setting it as the root page with the following code:
+        </p>
+
+<pre><code>
+rootPage: any = HomePage;
+</code></pre>
+
+        <p>
+
+            We are able to declare variables above the constructor to make them <b>member variables</b> or class members,
+            meaning they will be accessible throughout the entire class by referencing <code>this.myVar</code> and it will also
+            be available to your templates. In this case, we are creating a class member called <code>rootPage</code> that we will
+            be able to access throughout this class, and in the template. If we take a look at the associated template
+            that is in <b>src/app/app.html</b> we would see:
+        </p>
+
+<pre><code>
+&lt;ion-nav [root]="rootPage"&gt;&lt;/ion-nav&gt;
+</code></pre>
+
+        <p>
+            The template is accessing that class member that is stored in the <em>TypeScript</em> class file to configure the
+            <code>&lt;ion-nav&gt;</code> component. Remember every component you create will consist of a <b>.html</b>
+            template file and a <b>.ts</b> typescript class file.
+        </p>
+        <p>
+            The <b>root page</b> is the first page that will be displayed in your application, and then you can navigate to other pages from there.
+            To change views in an Ionic application you can either change this root page, or <b>push</b> and <b>pop</b> views on top of that page.
+            Pushing a view will change to that view, and popping it will remove it and go back to the previous view.
+        </p>
+
+        <aside class="special">
+            <p>
+                This <em>Codelab</em> has been adapted with permission from a
+                <a href="https://www.joshmorony.com/build-a-todo-app-from-scratch-with-ionic-2-video-tutorial/" target="_blank">tutorial</a>
+                posted on Josh Morony's blog. You can find many more excellent
+                <a href="https://www.joshmorony.com/category/ionic-tutorials/" target="_blank">Ionic tutorials</a> and
+                <a href="https://www.youtube.com/playlist?list=PLvLBrJpVwC7piPgR6u165HAnr-2Z80etB" target="_blank">videos</a> on his site.
+            </p>
+        </aside>
+
+        <google-codelab-survey survey-id="ionic-dc-todo-app-proficiency"><h4>How would describe your proficiency with Ionic?</h4>
+            <paper-radio-group>
+                <paper-radio-button>Never Used It</paper-radio-button>
+                <paper-radio-button>Some Experience with Ionic or Angular2+</paper-radio-button>
+                <paper-radio-button>Advanced User</paper-radio-button>
+            </paper-radio-group>
+        </google-codelab-survey>
+    </google-codelab-step>
+
+
+    
+
+    <google-codelab-step label="Congratulations!" duration="0">
+        <p>
+            You have learned how to use <b>Ionic Framework</b> to generate a simple todo app!
+        </p>
+
+        <h2 class="checklist">What we've covered:</h2>
+        <ul class="checklist">
+            <li>The basics of Ionic's (ie Angular's) component based app design.</li>
+            <li>Using <em>Ionic CLI</em> to generate new pages and data providers</li>
+            <li>Navigating between pages and launching modals</li>
+            <li>Inputing data using form elements</li>
+            <li>Passing data between page components</li>
+            <li>Persisting data <em>Ionic Storage</em></li>
+        </ul>
+
+        <aside class="special">
+            <p>
+                This <em>Codelab</em> has been adapted with permission from a
+                <a href="https://www.joshmorony.com/build-a-todo-app-from-scratch-with-ionic-2-video-tutorial/" target="_blank">tutorial</a>
+                posted on Josh Morony's blog. You can find many more excellent
+                <a href="https://www.joshmorony.com/category/ionic-tutorials/" target="_blank">Ionic tutorials</a> and
+                <a href="https://www.youtube.com/playlist?list=PLvLBrJpVwC7piPgR6u165HAnr-2Z80etB" target="_blank">videos</a> on his site.
+            </p>
+        </aside>
+
+
+        <google-codelab-survey survey-id="ionic-dc-todo-app-rating"><h4>How would rate the you experience with this code lab.</h4>
+            <paper-radio-group>
+                <paper-radio-button>Loved It! Learned a lot.</paper-radio-button>
+                <paper-radio-button>Pretty good. Could be Better.</paper-radio-button>
+                <paper-radio-button>Too advanced. Struggled with it.</paper-radio-button>
+            </paper-radio-group>
+        </google-codelab-survey>
+    </google-codelab-step>
+
+</google-codelab>
+
+</body>
+</html>
