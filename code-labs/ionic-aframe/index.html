@@ -28,134 +28,108 @@
                 environment="web"
                 last-updated="2018-02-11">
 
-    <google-codelab-step label="Overview & Setup" duration="5">
-        <h2 class="checklist">We will be building a <em>Todo App</em> that will allow a user to:</h2>
+    <google-codelab-step label="Overview & Setup" duration="10">
+        <h2 class="checklist">We will be building a <em>Augmented Reality</em> app using <a href="https://aframe.io/" target="_blank">A-Frame</a>, 
+            <a href="https://github.com/jeromeetienne/AR.js/tree/master/aframe" target="_blank">AR.JS</a>,
+        and stand alone <em>Ionic Web Components</em></h2>
         <ul class="checklist">
-            <li>View a list of todo items</li>
-            <li>Add new todo items</li>
-            <li>View details of a specific todo</li>
-            <li>Save the items to local storage</li>
+            <li>We will first set up a new CodePen to make previewing on phone easy.</li>
+            <li>We will then import the required libraries.</li>
+            <li>Then we set up the A-Frame Scene</li>
+            <li>Cover how to use Custom AR.JS markers</li>
+            <li>Finally, we will add an Ionic Range Slider component and hook it up the 3D model's rotation property</li>
         </ul>
 
-        <aside class="warning">
-            <p>
-                <b>Before You Get Started!</b>
-            </p>
-            <p>
-                If you haven't already you will want to install the <em>Ionic CLI</em> and <em>Cordova</em> by running the following command.
-                You may need to add <code>sudo</code> in front of this command to install on Mac:
-            </p>
-            <code>npm install -g ionic cordova</code>
-            <p>
-                If you get any warnings about <em>Node</em> or <em>NPM</em> being out of date you may need to install the latest version
-                of <a href="https://nodejs.org/en/" target="_blank">Node.js</a> and run:
-            </p>
-            <code>npm install -g npm</code>
-        </aside>
-
-        <h2>Generate a new Ionic Project</h2>
+        <h2>Generate a new Code Pen</h2>
         <p>
-            Now that you have installed the Ionic CLI you can generate your project using the blank template:
+            In order to make the codelab setup easy and allow you to preview the app on a mobile device we will use CodePen.
+            <em>CodePen</em> is a in browser live coding environment that is perfect for demos.
+        </p>
+        <p>
+            Create a new Pen with this <a href="https://codepen.io/pen/" target="_blank">link</a>.
         </p>
 
-        <code>ionic start ionic-todo blank</code>
+        <h2>Add The Javascript Libraries</h2>
+
+
+
+        <aside class="special">
+            Add the following code to the <b>HTML</b> pane:
+        </aside>
+
+<pre><code>
+&lt;script src="https://unpkg.com/@ionic/core@0.0.2-20/dist/ionic.js"&gt;&lt;/script&gt;
+&lt;script src="https://aframe.io/releases/0.7.0/aframe.min.js"&gt;&lt;/script&gt;
+&lt;script src="https://cdn.rawgit.com/rondagdag/AR.js/e0bee070d843f3c2eed84fbda4dbea24bbf941c8/aframe/build/aframe-ar.js">&lt;/script&gt;
+</code></pre>
+
+    <p>
+        The first library is the <b>Ionic Core</b> web components library. Once you import this library you can just drop Ionic Components into your HTML.
+        The second library is <b>A-Frame</b> and the third is a modified version of the <b>AR.JS</b> library for A-Frame that supports custom <em>Markers</em>.
+    </p>
+
+
+
+        <h2>Setup the A-Frame Scene</h2>
+
+
+
+        <aside class="special">
+            Add the following code to the <b>HTML</b> pane below the script tags:
+        </aside>
+
+<pre><code>
+&lt;a-scene embedded arjs='debugUIEnabled: false;' vr-mode-ui="enabled: false"&gt;
+
+    &lt;a-assets&gt;
+        &lt;a-asset-item id="ghost-model" src="https://ionic-dc.github.io/demos/ar-assets/models/ghost/scene.gltf"&gt;&lt;/a-asset-item&gt;
+        &lt;a-asset-item id="cat-model" src="https://ionic-dc.github.io/demos/ar-assets/models/cat/scene.gltf"&gt;&lt;/a-asset-item&gt;
+    &lt;/a-assets&gt;
+
+    &lt;a-marker type="pattern" url="https://ionic-dc.github.io/demos/ar-assets/marker-patterns/ionic-logo-marker.patt"&gt;
+        &lt;a-gltf-model src="#ghost-model" id="ghost" position="0 1 0" scale=".005 .005 .005" rotation="0 0 0"&gt;&lt;/a-gltf-model&gt;
+    &lt;/a-marker&gt;
+
+    &lt;a-marker type="pattern" url="https://ionic-dc.github.io/demos/ar-assets/marker-patterns/github-marker.patt"&gt;
+        &lt;a-gltf-model src="#cat-model" id="cat" scale=".075 .075 .075" rotation="0 0 0"&gt;&lt;/a-gltf-model&gt;
+    &lt;/a-marker&gt;
+
+    &lt;a-camera-static/&gt;
+
+&lt;/a-scene&gt;
+</code></pre>
 
         <p>
-            It may take a minuter or two to run. You can say no to making the app <em>cordova</em> capable and you don't need to sign in to <em>Ionic Pro</em>.
-            After the app is generated open that folder in your command prompt:
+            Here we are setting up an A-Frame scene, first we load some custom 3d models that have been downloaded from <a href="https://sketchfab.com/models?date=week&features=downloadable&sort_by=-likeCount" target="_blank">SketchFab</a>
+            These are loaded using the <code>&lt;a-assets&gt;</code> and <code>&lt;a-asset-item&gt;</code> A-Frame components.
+        </p>
+
+        <p>
+            The <code>&lt;a-marker&gt;</code> components come from the AR.JS library and the <code>type="pattern"</code> and <code>url</code> properties define custom <em>Marker</em>
+            patterns that correspond with the printed cards. You will notice one marker has the ionic logo and the other has the github logo.
+        </p>
+
+        <p>
+            Within the marker elements we place the 3D models that are loaded using <code>&lt;a-gltf-model&gt;</code> components. These have <code>src</code> properties matching the 
+            pre-loaded asset items. You will also notice the <code>scale</code> properties are set to properly scale down the models and the <code>position</code> of the ghost model
+            is lifted up slightly in the y-axis. The <code>rotation</code> property is set to 0 on all axes which has no effect at this point.
+        </p>
+
+
+        <h2>Preview Your Scene</h2>
+
+        <p>
+            At this point you should be able to save your CodePen, and load that URL on your mobile device. It may be easier to find your Pen if you create a CodePen account or
+            email yourself the url. Grant the web page camera access, Hit <em>Actions</em> > <em>Full Page</em> and you should be able to move your phone's camera over the markers and
+            see the 3D Models!
         </p>
         
-        <code>cd ionic-todo</code>
-
         <p>
-            Then open the <b>/ionic-todo</b> folder in your preferred code editor (<a href="https://code.visualstudio.com/" target="_blank">VSCode</a>
-            or <a href="https://atom.io/" target="_blank">Atom</a> work great for Ionic projects).
-        </p>
-
-        <h2>Anatomy of an Ionic Project</h2>
-        <p>
-            Ionic is built on the <em>Angular</em> framework for developing web applications so developing an Ionic 2+ application
-            will be very similar to developing a standard Angular 2+ app.
-        </p>
-        <p>
-            All of the <em>components</em> for our application will be in the <b>/src</b> folder
-            (including the root component in the <b>/app</b> folder, and all of our page components in the <b>/pages</b> folder).
-            A component will consist of a template (<b>.html</b> file defining structure and elements), class definition (<b>.ts</b> file defining actions and logic)
-            and styles (<b>.scss</b> file defining layout and appearance).
-        </p>
-        <p>
-            Along with components, you have <em>providers</em> (like the data service we will create later)
-            which don’t have a html template or scss styling, but are similar in structure component's typescript class.
-            These providers and will be placed in a providers folder.
+            In the next step we will be adding the <b>Ionic</b> range slider web component and wiring it up to the models.
         </p>
 
 
 
-        <aside class="special">
-            Replace <b>src/app/app.component.ts</b> to reflect the following:
-        </aside>
-
-<pre><code>
-import { Component } from '@angular/core';
-
-import { HomePage } from '../pages/home/home';
-@Component({
-  templateUrl: 'app.html'
-})
-export class MyApp {
-  rootPage:any = HomePage;
-
-  constructor() {
-  }
-}
-</code></pre>
-
-        <p>
-            The <b>app.component.ts</b> file defines our <b>root component</b>. This component is special when compared to the rest of
-            the components because it is the first component that will be added to the application, and from there we can
-            display more components, which can then add even more components and so on. Basically, our application structure
-            is like a tree with the root component at the root of that tree. So, it’s important that our root component
-            knows where to find our <b>HomePage</b> as it will need to set it as the root page. Notice that we are importing the
-            <b>HomePage</b> at the top of this file, and then setting it as the root page with the following code:
-        </p>
-
-<pre><code>
-rootPage: any = HomePage;
-</code></pre>
-
-        <p>
-
-            We are able to declare variables above the constructor to make them <b>member variables</b> or class members,
-            meaning they will be accessible throughout the entire class by referencing <code>this.myVar</code> and it will also
-            be available to your templates. In this case, we are creating a class member called <code>rootPage</code> that we will
-            be able to access throughout this class, and in the template. If we take a look at the associated template
-            that is in <b>src/app/app.html</b> we would see:
-        </p>
-
-<pre><code>
-&lt;ion-nav [root]="rootPage"&gt;&lt;/ion-nav&gt;
-</code></pre>
-
-        <p>
-            The template is accessing that class member that is stored in the <em>TypeScript</em> class file to configure the
-            <code>&lt;ion-nav&gt;</code> component. Remember every component you create will consist of a <b>.html</b>
-            template file and a <b>.ts</b> typescript class file.
-        </p>
-        <p>
-            The <b>root page</b> is the first page that will be displayed in your application, and then you can navigate to other pages from there.
-            To change views in an Ionic application you can either change this root page, or <b>push</b> and <b>pop</b> views on top of that page.
-            Pushing a view will change to that view, and popping it will remove it and go back to the previous view.
-        </p>
-
-        <aside class="special">
-            <p>
-                This <em>Codelab</em> has been adapted with permission from a
-                <a href="https://www.joshmorony.com/build-a-todo-app-from-scratch-with-ionic-2-video-tutorial/" target="_blank">tutorial</a>
-                posted on Josh Morony's blog. You can find many more excellent
-                <a href="https://www.joshmorony.com/category/ionic-tutorials/" target="_blank">Ionic tutorials</a> and
-                <a href="https://www.youtube.com/playlist?list=PLvLBrJpVwC7piPgR6u165HAnr-2Z80etB" target="_blank">videos</a> on his site.
-            </p>
-        </aside>
 
         <google-codelab-survey survey-id="ionic-dc-todo-app-proficiency"><h4>How would describe your proficiency with Ionic?</h4>
             <paper-radio-group>
@@ -167,32 +141,113 @@ rootPage: any = HomePage;
     </google-codelab-step>
 
 
+
+    <google-codelab-step label="Adding Ionic Range Slider Component" duration="5">
+            
+    
+            <h2>Add Ionic Component</h2>
+            <p>
+                We will now ad the Ionic Component, a bit of CSS, and a bit of Javascript to wire it together.
+            </p>
+    
+            <aside class="special">
+                    Add the following to the bottom of your HTML below the A-Frame code:
+            </aside>
+    
+    <pre><code>
+&lt;ion-footer&gt;
+    &lt;ion-range&gt;&lt;/ion-range&gt;
+&lt;/ion-footer&gt;
+    </code></pre>
+    
+            <p>
+                This adds the <code>&lt;ion-range&gt;</code> component to your page.
+            </p>
+
+            <aside class="special">
+                    Add the following to the <b>CSS</b> pane:
+            </aside>
+    
+    <pre><code>
+ion-footer {
+    position: fixed;
+    bottom: 0;
+}
+    </code></pre>
+    
+            <p>
+                This positions <code>&lt;ion-range&gt;</code> component to the bottom of the page.
+            </p>
+
+
+
+            <aside class="special">
+                    Now add the following javascipt code to the <b>JS</b> pane:
+            </aside>
+    
+    <pre><code>
+let sceneElement = document.querySelector("a-scene");
+let ghostElement = sceneElement.querySelector("#ghost");
+let catElement = sceneElement.querySelector("#cat");
+
+let rangeElement = document.querySelector("ion-range");
+
+rangeElement.addEventListener("ionChange", e => {
+    let newRotationValue = e.detail.value / 100 * 360;
+    
+    console.log(newRotationValue);
+    ghostElement.setAttribute("rotation", {x: 0, y: -newRotationValue, z: 0});
+    catElement.setAttribute("rotation", {x: 0, y: newRotationValue, z: 0});
+});     
+    </code></pre>
+    
+            <p>
+                This code adds the interactivity between the range slider and the A-Frame scene. First we query the <em>DOM</em> for the A-Frame scene
+                element, then we get the two 3d models under that. Next we get <code>ion-range</code> component. These are stored in javascript variables that
+                we can now act upon.
+            </p>
+
+            <p>
+                We add an event listener to the <code>ion-range</code> component that listens for the <code>ionChange</code> event. This is emitted by
+                the component every time the slider pin is dragged and the value is updated. This value is then converted to a rotation value that is a percentage
+                of a full 360deg rotation. Finally, we take the <code>newRotationValue</code> and apply it to the A-Frame element's rotation attribute using
+                <code>setAttribute</code>. We make the value negative for one and positive for the other to achive opposite rotation.
+            </p>
+
+
+            <h2>Preview Your Scene</h2>
+
+            <p>
+                At this point you should be able to save your CodePen, and load that URL on your mobile device. Hovering over the markers will make the 
+                3d models appear, and moving the slider will rotate them!
+            </p>
+            
+            <p>
+                With Ionic converting to web components it is easy to use them outside of a large Angular app and simply drop them into HTML and take advantage
+                of native web apis. Embrace the platform!
+            </p>
+    
+    
+    
+    
+        </google-codelab-step>
+
+
     
 
     <google-codelab-step label="Congratulations!" duration="0">
         <p>
-            You have learned how to use <b>Ionic Framework</b> to generate a simple todo app!
+            You have learned how to use <b>Ionic Components</b> with <b>A-Frame</b> to build Augmented Reality scenes.
         </p>
 
         <h2 class="checklist">What we've covered:</h2>
         <ul class="checklist">
-            <li>The basics of Ionic's (ie Angular's) component based app design.</li>
-            <li>Using <em>Ionic CLI</em> to generate new pages and data providers</li>
-            <li>Navigating between pages and launching modals</li>
-            <li>Inputing data using form elements</li>
-            <li>Passing data between page components</li>
-            <li>Persisting data <em>Ionic Storage</em></li>
+            <li>Using CodePen to make previewing on phone easy.</li>
+            <li>Importing the required libraries.</li>
+            <li>Setting up the A-Frame Scene</li>
+            <li>Custom AR.JS markers and Components</li>
+            <li>Ionic Range Slider component and hook it up the 3D model's rotation property</li>
         </ul>
-
-        <aside class="special">
-            <p>
-                This <em>Codelab</em> has been adapted with permission from a
-                <a href="https://www.joshmorony.com/build-a-todo-app-from-scratch-with-ionic-2-video-tutorial/" target="_blank">tutorial</a>
-                posted on Josh Morony's blog. You can find many more excellent
-                <a href="https://www.joshmorony.com/category/ionic-tutorials/" target="_blank">Ionic tutorials</a> and
-                <a href="https://www.youtube.com/playlist?list=PLvLBrJpVwC7piPgR6u165HAnr-2Z80etB" target="_blank">videos</a> on his site.
-            </p>
-        </aside>
 
 
         <google-codelab-survey survey-id="ionic-dc-todo-app-rating"><h4>How would rate the you experience with this code lab.</h4>
